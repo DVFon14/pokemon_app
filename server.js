@@ -4,13 +4,14 @@ const app = express();
 const mongoose = require("mongoose");
 const Pokemon = require("./models/pokemon");
 const pokemon = require("./models/pokemon");
+const methodOverride = require("method-override");
 const port = 8000;
 
 //===================MIDDLEWARE==================
 app.set("view engine", "jsx");
 app.engine("jsx", require("express-react-views").createEngine()); //similar to requiring
 app.use(express.urlencoded({ extended: false }));
-
+app.use(methodOverride("_method"));
 //=======Connect to Mongoose and remove deprication warnings=======
 mongoose.set("strictQuery", true);
 mongoose.connect(process.env.MONGO_URI, {
@@ -40,7 +41,7 @@ app.get("/pokemon/new", (req, res) => {
   res.render("New");
 });
 
-//POST <-----
+//POST
 app.post("/pokemon", (req, res) => {
   Pokemon.create(req.body, (error, newPokemon) => {
     res.redirect("/pokemon");
@@ -48,14 +49,17 @@ app.post("/pokemon", (req, res) => {
 });
 
 //DELETE
+app.delete("/pokemon/:id", (res, req) => {
+  res.send("delete");
+});
 
 //UPDATE
 
-//CREATE <-----
+//CREATE
 
 //EDIT
 
-//SHOW <-----
+//SHOW
 app.get("/pokemon/:id", (req, res) => {
   Pokemon.findById(req.param.id, (err, foundPokemon) => {
     res.render("Show", {
@@ -64,6 +68,7 @@ app.get("/pokemon/:id", (req, res) => {
   });
 });
 
+//PORT
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
