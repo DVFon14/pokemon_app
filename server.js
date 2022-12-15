@@ -2,41 +2,49 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const Pokemon = require("./models/pokemon");
 const pokemon = require("./models/pokemon");
 const port = 8000;
 
+//===================MIDDLEWARE==================
 app.set("view engine", "jsx");
 app.engine("jsx", require("express-react-views").createEngine()); //similar to requiring
+app.use(express.urlencoded({ extended: false }));
 
-//Connect to Mongoose and remove deprication warnings
+//=======Connect to Mongoose and remove deprication warnings=======
 mongoose.set("strictQuery", true);
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 mongoose.connection.once("open", () => {
-  console.log("connected to mongo");
+  console.log("connected to mongoDB");
 });
 
-app.get("/", (req, res) => {
-  res.send("Welcome to the Pokemon App!");
-});
+//===================ROUTES==================
+
+// app.get("/", (req, res) => {
+//   res.send("Welcome to the Pokemon App!");
+// });
 
 //INDEX <-----
 app.get("/pokemon", (req, res) => {
-  res.render("Index", { pokemon: pokemon }); //first argument if file. Second argument is data. Could be pokemon: pokemon of pokemon since the key-value pair are the same
+  //find all pokemn
+  Pokemon.find({}, (error, allPokemon) => {
+    res.render("Index", { pokemon: allPokemon });
+  });
+});
+
+//NEW
+app.get("/pokemon/new", (req, res) => {
+  res.render("New");
 });
 
 //POST <-----
 app.post("/pokemon", (req, res) => {
-  if (req.body.readyToPlay === "on") {
-    req.body.readyToPlay = true;
-  } else {
-    req.body.readyToPlay = false;
-  }
-  // Fruit.create(req.body, (error, createdFruit) => {
-  //   res.redirect("/pokemon");
-  // });
+  Pokemon.create(req.body, (error, newPokemon) => {
+    res.redirect("/pokemon");
+  });
 });
 
 //DELETE
@@ -49,12 +57,12 @@ app.post("/pokemon", (req, res) => {
 
 //SHOW <-----
 app.get("/pokemon/:id", (req, res) => {
-  res.render("Show", {
-    pokemon: pokemon[req.params.id], //pokemon: pokemon. The second is getting the index of the pokemon array
+  Pokemon.findById(req.param.id, (err, foundPokemon) => {
+    res.render("Show", {
+      pokemon: foundPokemon,
+    });
   });
 });
-
-//POST
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

@@ -5,11 +5,10 @@ const pokemonSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  color: {
+  img: {
     type: String,
     required: true,
   },
-  readyToPlay: Boolean,
 });
 
 const Pokemon = mongoose.model("Pokemon", pokemonSchema);
