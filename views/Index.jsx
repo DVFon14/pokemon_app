@@ -32,18 +32,3 @@ return(
 }}
 
 export default Index
-
-// const Index = ({pokemon}) => {
-//   export default  return (
-//       <div style={myStyle}>
-//            {pokemon.map((p)=>{ 
-//               return(
-//               <div>
-//               <a href={`pokemon/`}>{p.name.charAt(0).toUpperCase()}{pokemon.name.slice(1)}</a>
-//               </div>
-//               )
-//            })}
-   
-//       </div>
-//     )
-//   }

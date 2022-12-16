@@ -67,22 +67,13 @@ app.post("/pokemon", (req, res) => {
 
 //CREATE
 
-//SHOW
-app.get("/pokemon/:id", (req, res) => {
-  Pokemon.findById(req.params.id, (err, foundPokemon) => {
-    res.render("Show", {
-      pokemon: foundPokemon,
-    });
-  });
-});
-
 //PUT- EDIT
 app.get("/pokemon/:id/edit", (req, res) => {
   //find pokemon by id //pass in pokemon data
   Pokemon.findById(req.params.id, (err, pokemonData) => {
     //render a form
     res.render("Edit", {
-      poken: pokemonData, //give 'edit' access to pokemon data
+      pokemon: pokemonData, //give 'edit' access to pokemon data
     });
   });
 });
@@ -94,6 +85,15 @@ app.put("/pokemon/:id", (req, res) => {
     //redirect to show page
     console.log(updatedPokemon);
     res.redirect(`/pokemon/${req.params.id}`);
+  });
+});
+
+//SHOW
+app.get("/pokemon/:id", (req, res) => {
+  Pokemon.findById(req.params.id, (err, foundPokemon) => {
+    res.render("Show", {
+      pokemon: foundPokemon,
+    });
   });
 });
 
