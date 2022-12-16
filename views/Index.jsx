@@ -1,12 +1,6 @@
 import React, { Component } from 'react'
 
-const myStyle = {
-    color: '#ffffff',
-  };
-
-
-
-export default class Index extends Component {
+ class Index extends Component {
   render(){
     const pokemon = this.props.pokemon;
     console.log(this.props.pokemon)
@@ -20,9 +14,15 @@ return(
       <h1>All Pokemon</h1>
       {pokemon.map((p)=>{
         return(
-          <a href={`pokemon/${p.id}`}>
-            <li>{p.name}</li>
-          </a>
+          <div>
+            <li>
+            <a href={`pokemon/${p.id}`}>{p.name}</a>
+            <form action ={`/pokemon/${p.id}?_method=DELETE`} method ='POST'>
+              <input type ='submit' value ='DELETE'/>
+            </form>
+            </li>
+          </div>
+
         )
       })}
       <a href=''></a>
@@ -31,10 +31,10 @@ return(
 )
 }}
 
-
+export default Index
 
 // const Index = ({pokemon}) => {
-//     return (
+//   export default  return (
 //       <div style={myStyle}>
 //            {pokemon.map((p)=>{ 
 //               return(

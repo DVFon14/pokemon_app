@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const Pokemon = require("./models/pokemon");
-const pokemon = require("./models/pokemon");
+//const pokemon = require("./models/pokemon");
 const methodOverride = require("method-override");
 const port = 8000;
 
@@ -24,9 +24,24 @@ mongoose.connection.once("open", () => {
 
 //===================ROUTES==================
 
-// app.get("/", (req, res) => {
-//   res.send("Welcome to the Pokemon App!");
-// });
+app.get("/pokemon/seed", (req, res) => {
+  const pokemonStarterData = [
+    { name: "bulbasaur", img: "http://img.pokemondb.net/artwork/bulbasaur" },
+    { name: "ivysaur", img: "http://img.pokemondb.net/artwork/ivysaur" },
+    { name: "venusaur", img: "http://img.pokemondb.net/artwork/venusaur" },
+    { name: "charmander", img: "http://img.pokemondb.net/artwork/charmander" },
+    { name: "charizard", img: "http://img.pokemondb.net/artwork/charizard" },
+    { name: "squirtle", img: "http://img.pokemondb.net/artwork/squirtle" },
+    { name: "wartortle", img: "http://img.pokemondb.net/artwork/wartortle" },
+  ];
+
+  Pokemon.deleteMany({}).then((data) => {
+    Pokemon.create(pokemonStarterData).then((data) => {
+      console.log(data);
+      res.redirect("/pokemon");
+    });
+  });
+});
 
 //INDEX <-----
 app.get("/pokemon", (req, res) => {
@@ -48,23 +63,44 @@ app.post("/pokemon", (req, res) => {
   });
 });
 
-//DELETE
-app.delete("/pokemon/:id", (res, req) => {
-  res.send("delete");
-});
-
 //UPDATE
 
 //CREATE
 
-//EDIT
-
 //SHOW
 app.get("/pokemon/:id", (req, res) => {
-  Pokemon.findById(req.param.id, (err, foundPokemon) => {
+  Pokemon.findById(req.params.id, (err, foundPokemon) => {
     res.render("Show", {
       pokemon: foundPokemon,
     });
+  });
+});
+
+//PUT- EDIT
+app.get("/pokemon/:id/edit", (req, res) => {
+  //find pokemon by id //pass in pokemon data
+  Pokemon.findById(req.params.id, (err, pokemonData) => {
+    //render a form
+    res.render("Edit", {
+      poken: pokemonData, //give 'edit' access to pokemon data
+    });
+  });
+});
+
+//PUT ROUTE
+app.put("/pokemon/:id", (req, res) => {
+  //find pokemon by id and update
+  Pokemon.findByIdAndUpdate(req.params.id, req.body, (err, updatedPokemon) => {
+    //redirect to show page
+    console.log(updatedPokemon);
+    res.redirect(`/pokemon/${req.params.id}`);
+  });
+});
+
+//DELETE
+app.delete("/pokemon/:id", (req, res) => {
+  Pokemon.findByIdAndRemove(req.params.id, (err, deletedPokemon) => {
+    res.redirect("/pokemon");
   });
 });
 
